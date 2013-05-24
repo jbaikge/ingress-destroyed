@@ -7,7 +7,9 @@ import (
 
 // Reads an mbox-formatted file and returns the message blocks. The format
 // dictates that each message begins with a "From " line
-func mboxMessageBlocks(r io.Reader) (msgs <-chan []byte, err error) {
+func mboxMessageBlocks(r io.Reader) (msgs chan<- []byte, err error) {
 	msgs = make(chan []byte, 1)
+	buf := bytes.NewBuffer(make([]byte, 4096))
+	msgs <- buf.Bytes()
 	return
 }
