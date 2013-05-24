@@ -7,6 +7,7 @@ import (
 )
 
 var (
+	MsgStart     = []byte("From ")
 	mboxFilename = flag.String("f", "/var/mail/jake", "Path to mbox file to parse")
 )
 

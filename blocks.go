@@ -21,7 +21,7 @@ func mboxMessageBlocks(r io.Reader, blocks chan []byte) {
 		}
 
 		// Send buffered message when encountering a new message
-		if len(line) > 5 && bytes.Compare(line[0:5], []byte("From ")) == 0 && buf.Len() > 0 {
+		if len(line) > 5 && bytes.Compare(line[0:5], MsgStart) == 0 && buf.Len() > 0 {
 			block := make([]byte, buf.Len())
 			copy(block, buf.Bytes())
 			blocks <- block
