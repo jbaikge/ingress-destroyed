@@ -20,9 +20,13 @@ func main() {
 	}
 	defer f.Close()
 
-	msgs := make(chan []byte)
-	go mboxMessageBlocks(f, msgs)
-	for msg := range msgs {
-		log.Print(string(msg))
+	blocks := make(chan []byte)
+	go mboxMessageBlocks(f, blocks)
+	for block := range blocks {
+		msg, err := toMessage(block)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("%s %s", msg.Message.Header.Date(), )
 	}
 }
