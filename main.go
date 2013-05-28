@@ -27,6 +27,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("%s %s", msg.Message.Header.Date(), )
+		d, _ := msg.Message.Header.Date()
+		l, _ := msg.Message.Header.AddressList("From")
+		log.Printf("%s %s", d, l[0].Name)
 	}
 }
