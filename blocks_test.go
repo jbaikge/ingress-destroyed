@@ -32,3 +32,12 @@ func TestSimpleBlocks(t *testing.T) {
 		i++
 	}
 }
+
+func BenchmarkSimpleBlocks(b *testing.B) {
+	r := bytes.NewReader([]byte("From joe01@test.com Thu May 23 22:00:04 2013\n"))
+	for i := 0; i < b.N; i++ {
+		blocks := make(chan []byte, 0)
+		go mboxMessageBlocks(r, blocks)
+		<-blocks
+	}
+}
