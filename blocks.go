@@ -12,7 +12,7 @@ func mboxMessageBlocks(r io.Reader, blocks chan []byte) {
 	defer close(blocks)
 
 	br := bufio.NewReader(r)
-	buf := bytes.NewBuffer(make([]byte, 0, 4096))
+	buf := bytes.NewBuffer(make([]byte, 0, 8192))
 
 	for {
 		line, err := br.ReadBytes('\n')
