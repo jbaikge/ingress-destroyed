@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 )
@@ -21,6 +22,7 @@ func main() {
 	defer f.Close()
 
 	blocks := make(chan []byte)
+	msgCount := 0
 	go mboxMessageBlocks(f, blocks)
 	for block := range blocks {
 		msg, err := toMessage(block)
@@ -28,7 +30,15 @@ func main() {
 			log.Fatal(err)
 		}
 		d, _ := msg.Message.Header.Date()
-		l, _ := msg.Message.Header.AddressList("From")
-		log.Printf("%s %s", d, l[0].Name)
+		name := ExtractName(msg.HTML)
+		destroyer := []byte(`unknown`)
+		locs, err := URLLocations(ExtractLinks(msg.HTML))
+		if err != nil {
+			log.Fatal(err)
+		}
+		for i, l := range locs {
+			fmt.Printf("[%d.%d] %s %s %s <%0.6f,%0.6f>\n", msgCount, i, d, string(name), string(destroyer), l.Lat, l.Lon)
+		}
+		msgCount++
 	}
 }
