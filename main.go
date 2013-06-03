@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 var (
@@ -31,13 +32,13 @@ func main() {
 		}
 		d, _ := msg.Message.Header.Date()
 		name := ExtractName(msg.HTML)
-		destroyer := []byte(`unknown`)
+		destroyer := ExtractDestroyer(msg.HTML)
 		locs, err := URLLocations(ExtractLinks(msg.HTML))
 		if err != nil {
 			log.Fatal(err)
 		}
 		for i, l := range locs {
-			fmt.Printf("[%d.%d] %s %s %s <%0.6f,%0.6f>\n", msgCount, i, d, string(name), string(destroyer), l.Lat, l.Lon)
+			fmt.Printf("[%d.%d] %s %s %s <%0.6f,%0.6f>\n", msgCount, i, d.Format(time.Stamp), string(name), string(destroyer), l.Lat, l.Lon)
 		}
 		msgCount++
 	}
