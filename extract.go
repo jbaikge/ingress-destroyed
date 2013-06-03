@@ -17,3 +17,14 @@ func extractLinks(b []byte) (urls []*url.URL) {
 	}
 	return
 }
+
+func extractName(b []byte) (n []byte) {
+	var end int
+	stop := byte(',')
+	for end = range b {
+		if b[end] == stop {
+			break
+		}
+	}
+	return b[:end]
+}
