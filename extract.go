@@ -1,11 +1,24 @@
 package main
 
 import (
+	"bytes"
 	"net/url"
 	"regexp"
 )
 
 var reURL = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
+
+func ExtractDestroyer(b []byte) (n []byte) {
+	fields := bytes.Fields(b)
+	cmp := []byte(`destroyed`)
+	for i, f := range fields {
+		if bytes.Compare(f, cmp) == 0 {
+			n = fields[i+2]
+			break
+		}
+	}
+	return
+}
 
 func ExtractLinks(b []byte) (urls []*url.URL) {
 	for _, rawurl := range reURL.FindAllSubmatch(b, -1) {
