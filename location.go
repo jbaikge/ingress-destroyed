@@ -12,6 +12,18 @@ type Location struct {
 	Lon float64
 }
 
+func URLLocations(urls []*url.URL) (locs []*Location, err error) {
+	locs = make([]*Location, len(urls))
+	var l *Location
+	for i := range urls {
+		if l, err = urlLocation(urls[i]); err != nil {
+			break
+		}
+		locs[i] = l
+	}
+	return
+}
+
 func e6Location(lat, lon string) (l *Location, err error) {
 	var iLat, iLon int64
 	if iLat, err = strconv.ParseInt(lat, 10, 64); err != nil {
@@ -46,16 +58,4 @@ func urlLocation(u *url.URL) (l *Location, err error) {
 		return e6Location(latE6[0], u.Query()["lngE6"][0])
 	}
 	return nil, errors.New("No Latitude or Longitude found")
-}
-
-func urlLocations(urls []*url.URL) (locs []*Location, err error) {
-	locs = make([]*Location, len(urls))
-	var l *Location
-	for i := range urls {
-		if l, err = urlLocation(urls[i]); err != nil {
-			break
-		}
-		locs[i] = l
-	}
-	return
 }

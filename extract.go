@@ -7,7 +7,7 @@ import (
 
 var reURL = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
 
-func extractLinks(b []byte) (urls []*url.URL) {
+func ExtractLinks(b []byte) (urls []*url.URL) {
 	for _, rawurl := range reURL.FindAllSubmatch(b, -1) {
 		u, err := url.Parse(string(rawurl[1]))
 		if err != nil {
@@ -18,7 +18,7 @@ func extractLinks(b []byte) (urls []*url.URL) {
 	return
 }
 
-func extractName(b []byte) (n []byte) {
+func ExtractName(b []byte) (n []byte) {
 	var end int
 	stop := byte(',')
 	for end = range b {
