@@ -6,7 +6,24 @@ import (
 	"regexp"
 )
 
+type Carnage struct {
+	Type  CarnageType
+	Count int
+}
+
+type CarnageType string
+
+const (
+	Link      = CarnageType("Link")
+	Mod       = CarnageType("Mod")
+	Resonator = CarnageType("Resonator")
+)
+
 var reURL = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
+
+func ExtractCarnage(b []byte) (c []*Carnage) {
+	return
+}
 
 func ExtractDestroyer(b []byte) (n []byte) {
 	fields := bytes.Fields(b)
