@@ -1,4 +1,4 @@
-package main
+package location
 
 import (
 	"errors"
@@ -12,7 +12,7 @@ type Location struct {
 	Lon float64
 }
 
-func URLLocations(urls []*url.URL) (locs []*Location, err error) {
+func FromURLs(urls []*url.URL) (locs []*Location, err error) {
 	locs = make([]*Location, len(urls))
 	var l *Location
 	for i := range urls {
