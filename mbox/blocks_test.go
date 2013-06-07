@@ -1,4 +1,4 @@
-package main
+package mbox
 
 import (
 	"bytes"
@@ -21,7 +21,7 @@ func TestSimpleBlocks(t *testing.T) {
 	r := bytes.NewReader(bytes.Join(lines, []byte{}))
 
 	blocks := make(chan []byte, 0)
-	go mboxMessageBlocks(r, blocks)
+	go MessageBlocks(r, blocks)
 
 	i := 0
 	for block := range blocks {
@@ -37,7 +37,7 @@ func BenchmarkSimpleBlocks(b *testing.B) {
 	r := bytes.NewReader([]byte("From joe01@test.com Thu May 23 22:00:04 2013\n"))
 	for i := 0; i < b.N; i++ {
 		blocks := make(chan []byte, 0)
-		go mboxMessageBlocks(r, blocks)
+		go MessageBlocks(r, blocks)
 		<-blocks
 	}
 }
