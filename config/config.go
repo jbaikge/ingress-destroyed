@@ -29,6 +29,8 @@ type storage struct {
 var Config = configType{}
 
 func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	var configFile = os.Getenv("HOME") + "/.config/ingress-destroyed.yaml"
 	if f, err := os.Open(configFile); err == nil {
 		b, err := ioutil.ReadAll(f)
@@ -38,8 +40,6 @@ func init() {
 		if err := goyaml.Unmarshal(b, &Config); err != nil {
 			log.Fatal("Error processing", configFile, ":", err)
 		}
-	} else {
-		log.Printf("Couldn't read %s: %s", configFile, err)
 	}
 
 	flag.StringVar(&Config.Imap.Host, "imap.host", Config.Imap.Host, "IMAP Host")
