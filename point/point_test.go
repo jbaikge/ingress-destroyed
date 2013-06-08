@@ -1,4 +1,4 @@
-package location
+package point
 
 import (
 	"net/url"
