@@ -15,11 +15,12 @@ type Message struct {
 	HTML    []byte
 }
 
-func Parse(b []byte) (m Message, err error) {
+func Parse(b []byte) (m *Message, err error) {
 	return toMessage(b)
 }
 
-func toMessage(b []byte) (m Message, err error) {
+func toMessage(b []byte) (m *Message, err error) {
+	m = &Message{}
 	m.Message, err = mail.ReadMessage(bytes.NewReader(b))
 	if err != nil {
 		return
