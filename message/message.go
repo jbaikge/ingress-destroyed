@@ -1,4 +1,4 @@
-package main
+package message
 
 import (
 	"bytes"
@@ -15,10 +15,11 @@ type Message struct {
 	HTML    []byte
 }
 
+func Parse(b []byte) (m Message, err error) {
+	return toMessage(b)
+}
+
 func toMessage(b []byte) (m Message, err error) {
-	if bytes.Compare(b[:5], MsgStart) == 0 {
-		bytes.Replace(b, MsgStart, []byte("From: "), 1)
-	}
 	m.Message, err = mail.ReadMessage(bytes.NewReader(b))
 	if err != nil {
 		return
