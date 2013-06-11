@@ -12,14 +12,14 @@ type Point struct {
 	Lon float64
 }
 
-func FromURLs(urls []*url.URL) (locs []*Point, err error) {
-	locs = make([]*Point, len(urls))
+func FromURLs(urls []*url.URL) (points []*Point, err error) {
+	points = make([]*Point, len(urls))
 	var l *Point
 	for i := range urls {
 		if l, err = urlPoint(urls[i]); err != nil {
 			break
 		}
-		locs[i] = l
+		points[i] = l
 	}
 	return
 }
