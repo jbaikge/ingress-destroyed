@@ -12,6 +12,13 @@ func TestEnemy(t *testing.T) {
 	}
 }
 
+func TestLines(t *testing.T) {
+	lines := Lines(extractHtml)
+	for i, l := range lines {
+		t.Logf("[%d] %s", i, string(l))
+	}
+}
+
 func TestLinks(t *testing.T) {
 	urls := Links(extractHtml)
 	for i, u := range urls {

@@ -20,6 +20,10 @@ func Enemy(b []byte) (s string) {
 	return
 }
 
+func Lines(b []byte) (l [][]byte) {
+	return bytes.Split(b, []byte(`<br/><br/>`))
+}
+
 func Links(b []byte) (urls []*url.URL) {
 	for _, rawurl := range reURL.FindAllSubmatch(b, -1) {
 		u, err := url.Parse(string(rawurl[1]))
