@@ -2,11 +2,36 @@ package extract
 
 import (
 	"bytes"
+	"github.com/jbaikge/ingress-destroyed/damage"
 	"net/url"
 	"regexp"
+	"strconv"
 )
 
 var reURL = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
+
+func Damage(b []byte) *damage.Damage {
+	d := &damage.Damage{
+		Type: damage.Unknown,
+	}
+
+	fields := bytes.Fields(b)
+	if len(fields) < 2 {
+		return d
+	}
+	switch 0 {
+	case bytes.Compare(fields[1], []byte(`Resonator(s)`)):
+		d.Type = damage.Resonator
+		d.Count, _ = strconv.Atoi(string(fields[0]))
+	case bytes.Compare(fields[1], []byte(`Mod(s)`)):
+		d.Type = damage.Mod
+		d.Count, _ = strconv.Atoi(string(fields[0]))
+	case bytes.Compare(fields[1], []byte(`Link`)):
+		d.Type = damage.Link
+		d.Count = 1
+	}
+	return d
+}
 
 func Enemy(b []byte) (s string) {
 	fields := bytes.Fields(b)

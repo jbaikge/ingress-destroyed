@@ -11,6 +11,7 @@ const (
 	Link      = DamageType("Link")
 	Mod       = DamageType("Mod")
 	Resonator = DamageType("Resonator")
+	Unknown   = DamageType("Unknown")
 )
 
 func (t DamageType) String() string {
