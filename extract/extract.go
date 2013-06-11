@@ -8,12 +8,12 @@ import (
 
 var reURL = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
 
-func Destroyer(b []byte) (n []byte) {
+func Enemy(b []byte) (s string) {
 	fields := bytes.Fields(b)
 	cmp := []byte(`destroyed`)
 	for i, f := range fields {
 		if bytes.Compare(f, cmp) == 0 {
-			n = fields[i+2]
+			s = string(fields[i+2])
 			break
 		}
 	}
@@ -31,7 +31,7 @@ func Links(b []byte) (urls []*url.URL) {
 	return
 }
 
-func Name(b []byte) (n []byte) {
+func Name(b []byte) string {
 	var end int
 	stop := byte(',')
 	for end = range b {
@@ -39,5 +39,5 @@ func Name(b []byte) (n []byte) {
 			break
 		}
 	}
-	return b[:end]
+	return string(b[:end])
 }
