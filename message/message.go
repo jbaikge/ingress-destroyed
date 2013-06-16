@@ -14,6 +14,7 @@ type Message struct {
 	Message *mail.Message
 	Id      string
 	Date    time.Time
+	From    string
 	Text    []byte
 	HTML    []byte
 }
@@ -30,6 +31,7 @@ func toMessage(b []byte) (m *Message, err error) {
 	}
 
 	m.Id = m.Message.Header.Get("Message-ID")
+	m.From = m.Message.Header.Get("From")
 	if m.Date, err = m.Message.Header.Date(); err != nil {
 		return
 	}
