@@ -7,6 +7,7 @@ import (
 	"launchpad.net/goyaml"
 	"log"
 	"os"
+	"time"
 )
 
 type imap struct {
@@ -14,6 +15,7 @@ type imap struct {
 	Password  string
 	Username  string
 	DeleteOld bool
+	Refresh   time.Duration
 }
 
 type storage struct {
@@ -34,6 +36,11 @@ func init() {
 		log.Fatalf("Error processing configuration: %s", err)
 	}
 
+	if Imap.Refresh == 0 {
+		Imap.Refresh = 5 * time.Minute
+	}
+
+	flag.DurationVar(&Imap.Refresh, "imap.refresh", Imap.Refresh, "Duration between refresh intervals")
 	flag.BoolVar(&Imap.DeleteOld, "imap.deleteold", Imap.DeleteOld, "Delete old (processed) messages")
 	flag.StringVar(&Imap.Host, "imap.host", Imap.Host, "IMAP Host")
 	flag.StringVar(&Imap.Username, "imap.username", Imap.Username, "IMAP Username")
