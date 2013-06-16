@@ -74,7 +74,7 @@ func SetupIMAP(msgChan chan *mail.Message) (err error) {
 
 	go func() {
 		log.Printf("IMAP ready. Parsing...")
-		client.Messages(msgChan)
+		client.Messages(msgChan, config.Imap.DeleteOld)
 		client.Client.Close()
 	}()
 	return

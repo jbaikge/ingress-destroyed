@@ -27,10 +27,16 @@ func Login(server, user, passwd string) (i *Imap, err error) {
 	return
 }
 
-func (c *Imap) Messages(msgChan chan *mail.Message) {
+func (c *Imap) Messages(msgChan chan *mail.Message, deleteOld bool) {
 	log.Println("Starting IMAP Message poll")
 	for {
 		log.Print("Polling...")
+		if deleteOld {
+			if err := c.DeleteOld(); err != nil {
+				log.Print(err)
+			}
+			log.Print("Deleted")
+		}
 		msgs, err := c.NewMessages()
 		if err != nil {
 			log.Print(err)
@@ -51,6 +57,17 @@ func (c *Imap) AllMessages() (msgs []*imap.Msg, err error) {
 	msgs = c.Inbox.Msgs()
 	log.Printf("Inbox contains %d messages", len(msgs))
 	return
+}
+
+func (c *Imap) DeleteOld() (err error) {
+	toDelete := make([]*imap.Msg, 0, len(c.oldMsgs))
+	for m := range c.oldMsgs {
+		if m.Hdr.From[0].Email == "ingress-support@google.com" {
+			toDelete = append(toDelete, m)
+		}
+	}
+	log.Printf("Deleting %d processed messages", len(toDelete))
+	return c.Inbox.Delete(toDelete)
 }
 
 func (c *Imap) NewMessages() (msgs []*imap.Msg, err error) {
