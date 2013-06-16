@@ -11,3 +11,7 @@ type Message struct {
 	Text []byte
 	HTML []byte
 }
+
+func (m Message) FromNiantic() bool {
+	return m.From == "Niantic Project Operations <ingress-support@google.com>"
+}

@@ -13,9 +13,8 @@ import (
 )
 
 var (
-	stores    = make([]chan *action.Action, 0, 2)
-	validFrom = "Niantic Project Operations <ingress-support@google.com>"
-	wg        sync.WaitGroup
+	stores = make([]chan *action.Action, 0, 2)
+	wg     sync.WaitGroup
 )
 
 func main() {
@@ -56,7 +55,7 @@ func main() {
 	log.Printf("Box ready. Parsing...")
 	go box.Messages(msgChan)
 	for msg := range msgChan {
-		if msg.From != validFrom {
+		if !msg.FromNiantic() {
 			continue
 		}
 		log.Printf("Parsing message: %s From %s", msg.Id, msg.From)
