@@ -10,7 +10,7 @@ var MsgStart = []byte("From ")
 
 // Reads an mbox-formatted file and returns the message blocks. The format
 // dictates that each message begins with a "From " line
-func MessageBlocks(r io.Reader, blocks chan []byte) {
+func Blocks(r io.Reader, blocks chan []byte) {
 	defer close(blocks)
 
 	br := bufio.NewReader(r)

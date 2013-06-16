@@ -27,7 +27,7 @@ func Login(server, user, passwd string) (i *Imap, err error) {
 	return
 }
 
-func (c *Imap) LiveMessages(msgChan chan *imap.Msg) {
+func (c *Imap) Messages(msgChan chan *message.Message) {
 	log.Println("Starting IMAP Message poll")
 	for {
 		log.Print("Polling...")

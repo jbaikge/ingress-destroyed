@@ -1,26 +1,29 @@
-package message
+package mbox
 
 import (
+	"github.com/jbaikge/ingress-destroyed/message"
 	"net/mail"
 	"testing"
 )
 
 func TestSimple(t *testing.T) {
-	msg, err := toMessage(simpleMboxMsg)
-	if err != nil {
+	msg := &message.Message{}
+	if err := toMessage(simpleMboxMsg, msg); err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("%+v", msg.Message)
+	t.Logf("ID:   %s", msg.Id)
+	t.Logf("From: %s", msg.From)
+	t.Logf("Date: %s", msg.Date)
 }
 
 func TestComplex(t *testing.T) {
-	msg, err := toMessage(complexMboxMsg)
-	if err != nil {
+	msg := &message.Message{}
+	if err := toMessage(complexMboxMsg, msg); err != nil {
 		t.Fatal(err)
 	}
-	for header, val := range msg.Message.Header {
-		t.Logf("[%s] %s", header, val)
-	}
+	t.Logf("ID:   %s", msg.Id)
+	t.Logf("From: %s", msg.From)
+	t.Logf("Date: %s", msg.Date)
 }
 
 func TestGetBoundary(t *testing.T) {
@@ -52,16 +55,16 @@ func TestGetContentType(t *testing.T) {
 }
 
 func TestComplexText(t *testing.T) {
-	msg, err := toMessage(complexMboxMsg)
-	if err != nil {
+	msg := &message.Message{}
+	if err := toMessage(complexMboxMsg, msg); err != nil {
 		t.Fatal(err)
 	}
 	t.Log(string(msg.Text))
 }
 
 func TestSimpleText(t *testing.T) {
-	msg, err := toMessage(simpleMboxMsg)
-	if err != nil {
+	msg := &message.Message{}
+	if err := toMessage(simpleMboxMsg, msg); err != nil {
 		t.Fatal(err)
 	}
 	t.Log(string(msg.Text))
