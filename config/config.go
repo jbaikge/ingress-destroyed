@@ -75,7 +75,5 @@ func ReadFromFile(filename string) (err error) {
 	if err := goyaml.Unmarshal(b, &c); err != nil {
 		return fmt.Errorf("Error processing %s: %s", filename, err)
 	}
-
-	log.Printf("%+v", Imap)
 	return
 }
