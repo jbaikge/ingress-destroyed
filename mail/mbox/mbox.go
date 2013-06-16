@@ -1,7 +1,7 @@
 package mbox
 
 import (
-	"github.com/jbaikge/ingress-destroyed/message"
+	message "github.com/jbaikge/ingress-destroyed/mail"
 	"io"
 )
 

@@ -4,7 +4,7 @@ import (
 	"code.google.com/p/rsc/imap"
 	"fmt"
 	"github.com/jbaikge/ingress-destroyed/config"
-	"github.com/jbaikge/ingress-destroyed/message"
+	"github.com/jbaikge/ingress-destroyed/mail"
 	"log"
 	"time"
 )
@@ -27,7 +27,7 @@ func Login(server, user, passwd string) (i *Imap, err error) {
 	return
 }
 
-func (c *Imap) Messages(msgChan chan *message.Message) {
+func (c *Imap) Messages(msgChan chan *mail.Message) {
 	log.Println("Starting IMAP Message poll")
 	for {
 		log.Print("Polling...")
@@ -71,8 +71,8 @@ func (c *Imap) NewMessages() (msgs []*imap.Msg, err error) {
 	return
 }
 
-func ToMessage(msg *imap.Msg) (m *message.Message) {
-	m = &message.Message{
+func ToMessage(msg *imap.Msg) (m *mail.Message) {
+	m = &mail.Message{
 		Id:   fmt.Sprint(msg.UID),
 		Date: msg.Date,
 	}

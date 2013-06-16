@@ -3,7 +3,7 @@ package mbox
 import (
 	"bytes"
 	"errors"
-	"github.com/jbaikge/ingress-destroyed/message"
+	message "github.com/jbaikge/ingress-destroyed/mail"
 	"io/ioutil"
 	"mime/multipart"
 	"net/mail"
