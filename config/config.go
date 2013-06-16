@@ -64,16 +64,16 @@ func ReadFromFile(filename string) (err error) {
 
 	c := struct {
 		Imap    *imap
-		Mbox    *string
+		Mbox    string
 		Storage *storage
 	}{
 		Imap:    &Imap,
-		Mbox:    &Mbox,
 		Storage: &Storage,
 	}
 
 	if err := goyaml.Unmarshal(b, &c); err != nil {
 		return fmt.Errorf("Error processing %s: %s", filename, err)
 	}
+	Mbox = c.Mbox
 	return
 }
