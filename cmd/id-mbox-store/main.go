@@ -60,7 +60,6 @@ func main() {
 		}
 		log.Printf("Parsing message: %s From %s", msg.Id, msg.From)
 		actions, err := action.FromMessage(msg)
-		log.Printf("Found %d actions", len(actions))
 		if err != nil {
 			log.Print(err)
 			continue

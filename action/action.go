@@ -6,7 +6,6 @@ import (
 	"github.com/jbaikge/ingress-destroyed/extract"
 	"github.com/jbaikge/ingress-destroyed/mail"
 	"github.com/jbaikge/ingress-destroyed/point"
-	"log"
 	"time"
 )
 
@@ -56,11 +55,6 @@ func FromLine(l []byte, a *Action) (err error) {
 	if err != nil {
 		return
 	}
-	log.Printf("Found %d URLs; %d points; Damage Type: %s", len(urls), len(points), a.Damage.Type)
-	log.Print(string(l))
-	for _, u := range urls {
-		log.Print(u.String())
-	}
 	switch len(points) {
 	case 1:
 		a.Point, a.EndPoint = *points[0], point.Point{0.0, 0.0}
@@ -70,8 +64,4 @@ func FromLine(l []byte, a *Action) (err error) {
 		err = fmt.Errorf("Wasn't expecting %d points", len(points))
 	}
 	return
-}
-
-func (a *Action) GMap() string {
-	return fmt.Sprintf("\t\t{location: new google.maps.LatLng(%0.6f, %0.6f), weight: %d},", a.Point.Lat, a.Point.Lon, a.Damage.Count)
 }
