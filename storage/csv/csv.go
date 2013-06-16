@@ -6,6 +6,7 @@ import (
 	"github.com/jbaikge/ingress-destroyed/action"
 	"log"
 	"os"
+	"sync"
 )
 
 type CSV struct {
@@ -29,19 +30,21 @@ var fields = []string{
 	"endpoint_lon",
 }
 
-func Listener(filename string) (ch chan *action.Action, err error) {
+func Listener(filename string, wg *sync.WaitGroup) (ch chan *action.Action, err error) {
 	c, err := Open(filename)
 	if err != nil {
 		return
 	}
 	ch = make(chan *action.Action)
 	go func(c *CSV, ch chan *action.Action) {
+		wg.Add(1)
 		for a := range ch {
 			if err := c.Save(a); err != nil {
 				log.Print(err)
 			}
 		}
 		c.Close()
+		wg.Done()
 	}(c, ch)
 	return
 }
