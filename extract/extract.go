@@ -11,6 +11,7 @@ import (
 var (
 	breakSplit = []byte(`<br/><br/>`)
 	reURL      = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
+	reBR       = regexp.MustCompile(`\s*<br/>(\s*<br/>)+\s*`)
 )
 
 func Damage(b []byte, d *damage.Damage) {
@@ -46,7 +47,7 @@ func Enemy(b []byte) (s string) {
 }
 
 func Lines(b []byte) (l [][]byte) {
-	b = bytes.Replace(b, []byte(`<br/> <br/>`), breakSplit, -1)
+	b = reBR.ReplaceAll(b, breakSplit)
 	return bytes.Split(b, breakSplit)
 }
 
