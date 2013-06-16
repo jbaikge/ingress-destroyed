@@ -73,5 +73,9 @@ func TestSingleMessage(t *testing.T) {
 		t.Fatal(err)
 	}
 	m := ToMessage(msgs[0])
-	t.Logf("ID: %s\nDate: %s\nHTML len: %d\nText len %d", m.Id, m.Date, len(m.HTML), len(m.Text))
+	t.Logf("ID: %s", m.Id)
+	t.Logf("Date: %s", m.Date)
+	t.Logf("From: %s", m.From)
+	t.Logf("HTML len: %d", len(m.HTML))
+	t.Logf("Text len %d", len(m.Text))
 }

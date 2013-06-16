@@ -74,6 +74,7 @@ func (c *Imap) NewMessages() (msgs []*imap.Msg, err error) {
 func ToMessage(msg *imap.Msg) (m *mail.Message) {
 	m = &mail.Message{
 		Id:   fmt.Sprint(msg.UID),
+		From: msg.Hdr.From[0].String(),
 		Date: msg.Date,
 	}
 	for _, c := range msg.Root.Child {
