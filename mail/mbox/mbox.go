@@ -11,7 +11,7 @@ type Mbox struct {
 
 func (m *Mbox) Messages(msgChan chan *mail.Message) {
 	blockChan := make(chan []byte)
-	Blocks(m.Reader, blockChan)
+	go Blocks(m.Reader, blockChan)
 	for block := range blockChan {
 		msg := &mail.Message{}
 		toMessage(block, msg)
