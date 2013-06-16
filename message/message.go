@@ -7,10 +7,13 @@ import (
 	"mime/multipart"
 	"net/mail"
 	"strings"
+	"time"
 )
 
 type Message struct {
 	Message *mail.Message
+	ID      string
+	Date    time.Time
 	Text    []byte
 	HTML    []byte
 }
@@ -23,6 +26,11 @@ func toMessage(b []byte) (m *Message, err error) {
 	m = &Message{}
 	m.Message, err = mail.ReadMessage(bytes.NewReader(b))
 	if err != nil {
+		return
+	}
+
+	m.ID = m.Message.Header.Get("Message-ID")
+	if m.Date, err = m.Message.Header.Date(); err != nil {
 		return
 	}
 
