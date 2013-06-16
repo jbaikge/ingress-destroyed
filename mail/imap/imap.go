@@ -31,7 +31,13 @@ func (c *Imap) Messages(msgChan chan *mail.Message) {
 	log.Println("Starting IMAP Message poll")
 	for {
 		log.Print("Polling...")
-
+		msgs, err := c.NewMessages()
+		if err != nil {
+			log.Print(err)
+		}
+		for _, msg := range msgs {
+			msgChan <- ToMessage(msg)
+		}
 		<-time.After(config.Imap.Refresh)
 	}
 }
