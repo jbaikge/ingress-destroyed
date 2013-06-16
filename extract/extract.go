@@ -8,7 +8,10 @@ import (
 	"strconv"
 )
 
-var reURL = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
+var (
+	breakSplit = []byte(`<br/><br/>`)
+	reURL      = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
+)
 
 func Damage(b []byte, d *damage.Damage) {
 	d.Type = damage.Unknown
@@ -43,7 +46,8 @@ func Enemy(b []byte) (s string) {
 }
 
 func Lines(b []byte) (l [][]byte) {
-	return bytes.Split(b, []byte(`<br/><br/>`))
+	b = bytes.Replace(b, []byte(`<br/> <br/>`), breakSplit, -1)
+	return bytes.Split(b, breakSplit)
 }
 
 func Links(b []byte) (urls []*url.URL) {
