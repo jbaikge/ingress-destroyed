@@ -1,16 +1,20 @@
 package action
 
 import (
-	"errors"
 	"fmt"
 	"github.com/jbaikge/ingress-destroyed/damage"
 	"github.com/jbaikge/ingress-destroyed/extract"
 	"github.com/jbaikge/ingress-destroyed/mail"
 	"github.com/jbaikge/ingress-destroyed/point"
+	"log"
 	"time"
 )
 
 type Action struct {
+	Id struct {
+		MessageId string
+		ActionId  int
+	}
 	Agent    string
 	Enemy    string
 	Damage   damage.Damage
@@ -19,45 +23,51 @@ type Action struct {
 	EndPoint point.Point // Only used when Damage.Type == damage.Link
 }
 
-type Actions []Action
+func FromMessage(m *mail.Message) (actions []*Action, err error) {
+	lines := extract.Lines(m.HTML)
+	tpl := Action{
+		Agent: extract.Name(lines[0]),
+		Enemy: extract.Enemy(m.HTML),
+		Time:  m.Date,
+	}
 
-func FromMessage(m *mail.Message) (actions *Actions, err error) {
-	// lines := extract.Lines(m.HTML)
-
-	// tpl := Action{
-	// 	Agent: extract.Name(lines[0]),
-	// 	Enemy: extract.Enemy(m.HTML),
-	// }
-	// tpl.Time, _ = m.Message.Header.Date()
-
-	// actions = make(&Actions, 0, len(lines[1:]))
-	// for _, l := range lines {
-	// 	a := tpl
-	// 	if err = FromLine(l, &a); err != nil {
-	// 		continue
-	// 	}
-	// 	*actions = append(*actions, a)
-	// }
+	actions = make([]*Action, 0, len(lines[1:]))
+	for _, l := range lines {
+		a := &Action{}
+		*a = tpl
+		if err := FromLine(l, a); err != nil {
+			continue
+		}
+		actions = append(actions, a)
+	}
 	return
 }
 
 func FromLine(l []byte, a *Action) (err error) {
+	extract.Damage(l, &a.Damage)
+	if a.Damage.Type == damage.Unknown {
+		return fmt.Errorf("Valid damage not found in %s", string(l))
+	}
 	urls := extract.Links(l)
 	if len(urls) == 0 {
-		return errors.New("No URLs found")
+		return fmt.Errorf("No URLs found")
 	}
 	points, err := point.FromURLs(urls)
 	if err != nil {
 		return
 	}
-	extract.Damage(l, &a.Damage)
+	log.Printf("Found %d URLs; %d points; Damage Type: %s", len(urls), len(points), a.Damage.Type)
+	log.Print(string(l))
+	for _, u := range urls {
+		log.Print(u.String())
+	}
 	switch len(points) {
 	case 1:
-		a.Point = *points[0]
+		a.Point, a.EndPoint = *points[0], point.Point{0.0, 0.0}
 	case 2:
 		a.Point, a.EndPoint = *points[0], *points[1]
 	default:
-		errors.New(fmt.Sprintf("Wasn't expecting %d points", len(points)))
+		err = fmt.Errorf("Wasn't expecting %d points", len(points))
 	}
 	return
 }
