@@ -10,6 +10,8 @@ type Mbox struct {
 }
 
 func (m *Mbox) Messages(msgChan chan *mail.Message) {
+	defer close(msgChan)
+
 	blockChan := make(chan []byte)
 	go Blocks(m.Reader, blockChan)
 	for block := range blockChan {
