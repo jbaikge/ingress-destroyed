@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/jbaikge/ingress-destroyed/damage"
 	"github.com/jbaikge/ingress-destroyed/extract"
-	"github.com/jbaikge/ingress-destroyed/message"
+	"github.com/jbaikge/ingress-destroyed/mail"
 	"github.com/jbaikge/ingress-destroyed/point"
 	"time"
 )
@@ -21,7 +21,7 @@ type Action struct {
 
 type Actions []Action
 
-func FromMessage(m *message.Message) (actions *Actions, err error) {
+func FromMessage(m *mail.Message) (actions *Actions, err error) {
 	// lines := extract.Lines(m.HTML)
 
 	// tpl := Action{
