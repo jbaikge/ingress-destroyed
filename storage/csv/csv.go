@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"github.com/jbaikge/ingress-destroyed/action"
+	"log"
 	"os"
 )
 
@@ -26,6 +27,23 @@ var fields = []string{
 	"point_lon",
 	"endpoint_lat",
 	"endpoint_lon",
+}
+
+func Listener(filename string) (ch chan *action.Action, err error) {
+	c, err := Open(filename)
+	if err != nil {
+		return
+	}
+	ch = make(chan *action.Action)
+	go func(c *CSV, ch chan *action.Action) {
+		for a := range ch {
+			if err := c.Save(a); err != nil {
+				log.Print(err)
+			}
+		}
+		c.Close()
+	}(c, ch)
+	return
 }
 
 func Open(filename string) (f *CSV, err error) {
