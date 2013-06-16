@@ -13,10 +13,10 @@ import (
 type Action struct {
 	Agent    string
 	Enemy    string
-	Damage   *damage.Damage
+	Damage   damage.Damage
 	Time     time.Time
-	Point    *point.Point
-	EndPoint *point.Point // Only used when Damage.Type == damage.Link
+	Point    point.Point
+	EndPoint point.Point // Only used when Damage.Type == damage.Link
 }
 
 type Actions []Action
@@ -50,12 +50,12 @@ func FromLine(l []byte, a *Action) (err error) {
 	if err != nil {
 		return
 	}
-	a.Damage = extract.Damage(l)
+	extract.Damage(l, &a.Damage)
 	switch len(points) {
 	case 1:
-		a.Point = points[0]
+		a.Point = *points[0]
 	case 2:
-		a.Point, a.EndPoint = points[0], points[1]
+		a.Point, a.EndPoint = *points[0], *points[1]
 	default:
 		errors.New(fmt.Sprintf("Wasn't expecting %d points", len(points)))
 	}

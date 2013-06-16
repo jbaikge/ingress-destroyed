@@ -13,27 +13,27 @@ func TestLine(t *testing.T) {
 	lines := extract.Lines(extractHtml)
 	lineActions := map[int]Action{
 		1: Action{
-			Damage: &damage.Damage{
+			Damage: damage.Damage{
 				Count: 2,
 				Type:  damage.Resonator,
 			},
-			Point: &point.Point{38.751726, -77.473140},
+			Point: point.Point{38.751726, -77.473140},
 		},
 		3: Action{
-			Damage: &damage.Damage{
+			Damage: damage.Damage{
 				Count: 1,
 				Type:  damage.Link,
 			},
-			Point:    &point.Point{38.751586, -77.473347},
-			EndPoint: &point.Point{38.751757, -77.472814},
+			Point:    point.Point{38.751586, -77.473347},
+			EndPoint: point.Point{38.751757, -77.472814},
 		},
 		5: Action{
-			Damage: &damage.Damage{
+			Damage: damage.Damage{
 				Count: 1,
 				Type:  damage.Link,
 			},
-			Point:    &point.Point{38.751757, -77.472814},
-			EndPoint: &point.Point{38.751782, -77.473600},
+			Point:    point.Point{38.751757, -77.472814},
+			EndPoint: point.Point{38.751782, -77.473600},
 		},
 	}
 	for i, A := range lineActions {

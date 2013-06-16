@@ -10,14 +10,12 @@ import (
 
 var reURL = regexp.MustCompile(`href="(https?://(www.)?ingress.com/intel\?[^"]+)"`)
 
-func Damage(b []byte) *damage.Damage {
-	d := &damage.Damage{
-		Type: damage.Unknown,
-	}
+func Damage(b []byte, d *damage.Damage) {
+	d.Type = damage.Unknown
 
 	fields := bytes.Fields(b)
 	if len(fields) < 2 {
-		return d
+		return
 	}
 	switch 0 {
 	case bytes.Compare(fields[1], []byte(`Resonator(s)`)):
@@ -30,7 +28,6 @@ func Damage(b []byte) *damage.Damage {
 		d.Type = damage.Link
 		d.Count = 1
 	}
-	return d
 }
 
 func Enemy(b []byte) (s string) {

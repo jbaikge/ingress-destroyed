@@ -28,7 +28,8 @@ func TestDamage(t *testing.T) {
 		{Type: damage.Unknown, Count: 0},
 	}
 	for i, l := range Lines(extractHtml) {
-		d := Damage(l)
+		d := &Damage{}
+		Damage(l, d)
 		if cmp[i].Type != d.Type || cmp[i].Count != d.Count {
 			t.Errorf("Invalid damage: %+v != %+v", cmp[i], d)
 		}
