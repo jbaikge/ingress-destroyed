@@ -7,6 +7,7 @@ import (
 	"github.com/jbaikge/ingress-destroyed/mail"
 	"github.com/jbaikge/ingress-destroyed/mail/mbox"
 	"github.com/jbaikge/ingress-destroyed/storage/csv"
+	"github.com/jbaikge/ingress-destroyed/storage/sqlite"
 	"log"
 	"os"
 	"sync"
@@ -37,18 +38,19 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		//defer close(ch)
 		stores = append(stores, ch)
 		log.Print("CSV storage ready")
 	}
 
-	// if path := config.Storage.SQLite; path != "" {
-	// 	ch, err := sqlite.Listener(path)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	stores = append(stores, ch)
-	// }
+	if path := config.Storage.SQLite; path != "" {
+		log.Print("Using SQLite storage")
+		ch, err := sqlite.Listener(path, &wg)
+		if err != nil {
+			log.Fatal(err)
+		}
+		stores = append(stores, ch)
+		log.Print("SQLite storage ready")
+	}
 
 	msgChan := make(chan *mail.Message)
 	box := &mbox.Mbox{f}
