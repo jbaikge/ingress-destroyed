@@ -1,7 +1,6 @@
 package config
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -27,7 +26,7 @@ type imap struct {
 	Refresh   time.Duration
 }
 
-type postgres struct {
+type Postgres struct {
 	Host     string
 	Username string
 	Password string
@@ -36,12 +35,11 @@ type postgres struct {
 
 type storage struct {
 	CSV      string
-	Postgres postgres
+	Postgres Postgres
 	SQLite   string
 }
 
 var (
-	AutoConfig = true
 	ConfigFile = os.Getenv("HOME") + "/.config/ingress-destroyed.yaml"
 	Imap       = imap{}
 	Mbox       = ""
@@ -55,29 +53,30 @@ var (
 	}
 )
 
-func init() {
+// func init() {
+// 	flag.DurationVar(&Imap.Refresh, "imap.refresh", Imap.Refresh, "Duration between refresh intervals")
+// 	flag.BoolVar(&Imap.DeleteOld, "imap.deleteold", Imap.DeleteOld, "Delete old (processed) messages")
+// 	flag.BoolVar(&UseIMAP, "useimap", UseIMAP, "true = Use IMAP config; false = Use Mbox config")
+// 	flag.StringVar(&Imap.Host, "imap.host", Imap.Host, "IMAP Host")
+// 	flag.StringVar(&Imap.Username, "imap.username", Imap.Username, "IMAP Username")
+// 	flag.StringVar(&Imap.Password, "imap.password", Imap.Password, "IMAP Password")
+// 	flag.BoolVar(&Imap.Once, "imap.once", Imap.Once, "Only pull IMAP messages once, do not poll")
+// 	flag.StringVar(&Mbox, "mbox", Mbox, "User mbox path (usually /var/mail/user)")
+// 	flag.StringVar(&Storage.CSV, "storage.csv", Storage.CSV, "CSV Path")
+// 	flag.StringVar(&Storage.SQLite, "storage.sqlite", Storage.SQLite, "SQLite Database Path")
+// }
+
+func Init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	if AutoConfig {
-		if err := ReadFromFile(ConfigFile); err != nil {
-			log.Fatalf("Error processing configuration: %s", err)
-		}
+	if err := ReadFromFile(ConfigFile); err != nil {
+		log.Fatalf("Error processing configuration: %s", err)
+		return
 	}
 
 	if Imap.Refresh == 0 {
 		Imap.Refresh = 5 * time.Minute
 	}
-
-	flag.DurationVar(&Imap.Refresh, "imap.refresh", Imap.Refresh, "Duration between refresh intervals")
-	flag.BoolVar(&Imap.DeleteOld, "imap.deleteold", Imap.DeleteOld, "Delete old (processed) messages")
-	flag.BoolVar(&UseIMAP, "useimap", UseIMAP, "true = Use IMAP config; false = Use Mbox config")
-	flag.StringVar(&Imap.Host, "imap.host", Imap.Host, "IMAP Host")
-	flag.StringVar(&Imap.Username, "imap.username", Imap.Username, "IMAP Username")
-	flag.StringVar(&Imap.Password, "imap.password", Imap.Password, "IMAP Password")
-	flag.BoolVar(&Imap.Once, "imap.once", Imap.Once, "Only pull IMAP messages once, do not poll")
-	flag.StringVar(&Mbox, "mbox", Mbox, "User mbox path (usually /var/mail/user)")
-	flag.StringVar(&Storage.CSV, "storage.csv", Storage.CSV, "CSV Path")
-	flag.StringVar(&Storage.SQLite, "storage.sqlite", Storage.SQLite, "SQLite Database Path")
 }
 
 func ReadFromFile(filename string) (err error) {
