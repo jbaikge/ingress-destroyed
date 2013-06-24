@@ -9,6 +9,7 @@ import (
 	"github.com/jbaikge/ingress-destroyed/mail/imap"
 	"github.com/jbaikge/ingress-destroyed/mail/mbox"
 	"github.com/jbaikge/ingress-destroyed/storage/csv"
+	"github.com/jbaikge/ingress-destroyed/storage/postgres"
 	"github.com/jbaikge/ingress-destroyed/storage/sqlite"
 	"log"
 	"os"
@@ -21,6 +22,7 @@ var (
 )
 
 func main() {
+	config.Init()
 	flag.Parse()
 
 	SetupStores()
@@ -119,6 +121,16 @@ func SetupStores() {
 		}
 		stores = append(stores, ch)
 		log.Print("SQLite storage ready")
+	}
+
+	if config.Storage.Postgres.Host != "" {
+		log.Print("Using Postgres Storage")
+		ch, err := postgres.Listener(config.Storage.Postgres, &wg)
+		if err != nil {
+			log.Fatal(err)
+		}
+		stores = append(stores, ch)
+		log.Print("Postgres storage ready")
 	}
 }
 
