@@ -67,7 +67,7 @@ func (s *SQLite) Save(a *action.Action) (err error) {
 		a.Id.ActionId,
 		a.Agent,
 		a.Enemy,
-		a.Time.Format("2006-01-02 15:04:05.999"),
+		a.Time.Format("2006-01-02 15:04:05.999-07:00"),
 		a.Damage.Type.String(),
 		a.Damage.Count,
 		a.Point.Lat, a.Point.Lon,
