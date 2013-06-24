@@ -3,12 +3,20 @@ package config
 import (
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"launchpad.net/goyaml"
 	"log"
 	"os"
 	"time"
 )
+
+type config struct {
+	Imap    *imap
+	Mbox    *string
+	Storage *storage
+	UseIMAP *bool
+}
 
 type imap struct {
 	Host      string
@@ -19,23 +27,41 @@ type imap struct {
 	Refresh   time.Duration
 }
 
+type postgres struct {
+	Host     string
+	Username string
+	Password string
+	Database string
+}
+
 type storage struct {
-	SQLite string
-	CSV    string
+	CSV      string
+	Postgres postgres
+	SQLite   string
 }
 
 var (
-	Imap    = imap{}
-	Mbox    = ""
-	Storage = storage{}
-	UseIMAP = false
+	AutoConfig = true
+	ConfigFile = os.Getenv("HOME") + "/.config/ingress-destroyed.yaml"
+	Imap       = imap{}
+	Mbox       = ""
+	Storage    = storage{}
+	UseIMAP    = false
+	c          = &config{
+		Imap:    &Imap,
+		Mbox:    &Mbox,
+		Storage: &Storage,
+		UseIMAP: &UseIMAP,
+	}
 )
 
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	if err := ReadFromFile(os.Getenv("HOME") + "/.config/ingress-destroyed.yaml"); err != nil {
-		log.Fatalf("Error processing configuration: %s", err)
+	if AutoConfig {
+		if err := ReadFromFile(ConfigFile); err != nil {
+			log.Fatalf("Error processing configuration: %s", err)
+		}
 	}
 
 	if Imap.Refresh == 0 {
@@ -60,26 +86,17 @@ func ReadFromFile(filename string) (err error) {
 		return nil
 	}
 	defer f.Close()
+	return ReadConfig(f)
+}
 
-	b, err := ioutil.ReadAll(f)
+func ReadConfig(r io.Reader) (err error) {
+	b, err := ioutil.ReadAll(r)
 	if err != nil {
-		return fmt.Errorf("Error reading %s: %s", filename, err)
+		return fmt.Errorf("Error reading: %s", err)
 	}
 
-	c := struct {
-		Imap    *imap
-		Mbox    string
-		Storage *storage
-		UseIMAP bool
-	}{
-		Imap:    &Imap,
-		Storage: &Storage,
+	if err := goyaml.Unmarshal(b, c); err != nil {
+		return fmt.Errorf("Error processing: %s", err)
 	}
-
-	if err := goyaml.Unmarshal(b, &c); err != nil {
-		return fmt.Errorf("Error processing %s: %s", filename, err)
-	}
-	Mbox = c.Mbox
-	UseIMAP = c.UseIMAP
 	return
 }
